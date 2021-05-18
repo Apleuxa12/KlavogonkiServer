@@ -14,7 +14,7 @@ object TextDB {
 
     init{
 //      ADD TEXTS
-        add(Text(theme = "MockTheme", value = "Mock mock mock mock mock mock mock"))
+        add(Text(theme = "MockTheme", value = "Mock mock"))
     }
 
     private fun add(text: Text){

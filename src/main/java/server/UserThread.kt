@@ -1,6 +1,7 @@
 package server
 
 import models.*
+import server.domain.Calculator
 import utils.SerializationUtils
 import java.io.BufferedReader
 import java.io.IOException
@@ -28,35 +29,45 @@ class UserThread(
 
     override fun run() {
 //        Read userName
+        logger.info("Address ${socket.inetAddress} connected")
         try {
-            println("User ${socket.inetAddress} connected")
-            val name = readMessage<String>()
+            val name = readMessage<String>(reader.readLine())
             user = User(name, User.getId())
+            logger.info("${user.userName} connected")
 //        Send Text
             text = server.text
             sendMessage(text)
 
-            var message: String
-            var coloredText = ColoredText(text, ArrayList(), false)
+            var message = ""
+            var coloredText = ColoredText(text, createColorsInitial(text), false)
             var shift = 0
+            var previous = ""
 
             val elapsed = measureTimeMillis {
                 do {
 //              Read-send messages from/to server
-                    message = readMessage()
-                    if (message.isEmpty())
+                    val line = reader.readLine() ?: throw NullPointerException("User ${user.userName} disconnected")
+                    if (line.isEmpty())
                         continue
-                    coloredText = calculate(coloredText, message, shift)
-                    if (coloredText.shouldClear)
-                        shift += message.length
+                    message = readMessage(line)
+                    if(line != previous) {
+                        coloredText = Calculator.calculate(coloredText, message, shift)
+                        if (coloredText.shouldClear)
+                            shift += message.length
+                    }
+                    previous = line
 
                     sendMessage(coloredText)
-                    server.showMessage(user, message)
+//                    logger.info(message)
                 } while (!coloredText.isFinished)
             }
-            sendMessage(calculateResults(text, elapsed))
+            val results = Calculator.calculateResults(text, elapsed)
+            logger.info(results.toString())
+            sendMessage(results)
         } catch (e: IOException) {
             logger.severe(e.message)
+        } catch (e: NullPointerException) {
+            logger.info(e.message)
         } finally {
             close()
         }
@@ -68,48 +79,22 @@ class UserThread(
         socket.close()
     }
 
-    private fun calculate(coloredText: ColoredText, input: String, shift: Int): ColoredText {
+    private fun createColorsInitial(text: Text): ArrayList<Color>{
         val colors = ArrayList<Color>()
-        val inputColors = coloredText.colors
-        val text = coloredText.text
-        val stringText = text?.value
-
-        if (shift > 0 && inputColors.isNotEmpty()) {
-            for (i in 0..shift)
-                colors[i] = inputColors[i]
-        }
-
-        stringText?.forEachIndexed { i, letter ->
-            if (i < input.length) {
-                colors[i + shift] = when (letter) {
+        for(letter in text.value)
+            colors.add(
+                when(letter){
                     ' ' -> Color.SPACE
-                    input[i] -> Color.RIGHT
-                    else -> Color.WRONG
+                    else -> Color.NEUTRAL
                 }
-            } else
-                colors[i + shift] = Color.NEUTRAL
-        }
-
-        val shouldClear = if (shift + input.length <= stringText?.length ?: -1)
-            input.last() == ' ' && stringText?.substring(shift until (shift + input.length)) == input
-        else
-            false
-
-        return ColoredText(text, colors, shouldClear)
+            )
+        return colors
     }
 
-    private fun calculateResults(text: Text, elapsed: Long) =
-        Results(time = elapsed, speed = text.value.length.toDouble() / elapsed)
+    private inline fun <reified T> readMessage(input: String): T = SerializationUtils.deserializeMessage(input)
 
-    private inline fun <reified T> readMessage(): T {
-        val msg = SerializationUtils.deserializeMessage<T>(reader.readLine())
-        logger.info("READ : $msg")
-        return msg
-    }
 
     private fun <T> sendMessage(message: T) {
-        val msg = SerializationUtils.serializeMessage(message)
-        logger.info("WRITE : $msg")
-        writer.println(msg)
+        writer.println(SerializationUtils.serializeMessage(message))
     }
 }

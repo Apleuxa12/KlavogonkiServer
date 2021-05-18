@@ -25,13 +25,8 @@ class Server(
     }
 
     private fun start(socket: Socket) {
-        println("New connection")
         val thread = UserThread(socket, this)
         users.add(thread)
         thread.start()
-    }
-
-    fun showMessage(user: User, msg: String){
-        println(user.userName + " : " + msg)
     }
 }

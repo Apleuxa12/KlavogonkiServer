@@ -7,10 +7,6 @@ data class ColoredText(val text: Text?, val colors: ArrayList<Color>, val should
             if(colors.isEmpty())
                 return false
 
-            for(color in colors){
-                if(color == Color.NEUTRAL || color == Color.WRONG)
-                    return false
-            }
-            return true
+            return colors.all { color -> color == Color.RIGHT || color == Color.SPACE }
         }
 }

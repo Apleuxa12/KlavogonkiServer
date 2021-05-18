@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="utils.SerializationUtilsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2021-05-14T09:53:31" hostname="DESKTOP-6HDLNNF" time="0.076">
-  <properties/>
-  <testcase name="testSerialize" classname="utils.SerializationUtilsTest" time="0.056"/>
-  <testcase name="testDeserialize" classname="utils.SerializationUtilsTest" time="0.003"/>
-  <testcase name="substringTest" classname="utils.SerializationUtilsTest" time="0.017"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>
