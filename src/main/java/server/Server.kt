@@ -8,6 +8,7 @@ import java.net.ServerSocket
 import java.net.Socket
 
 class Server(
+    private val host: String,
     private val port: Int
 ) : Thread() {
     private val users = ArrayList<UserThread>()
@@ -15,8 +16,8 @@ class Server(
     val text: Text by lazy { TextDB.getRandomText() }
 
     override fun run() {
-        ServerSocket(port, 0, InetAddress.getByName(null)).use {
-            println("Server started on address ${it.localSocketAddress}")
+        ServerSocket(port, 0, InetAddress.getByName(host)).use {
+            println("Server started on address ${it.inetAddress}")
             do {
                 val socket = it.accept()
                 start(socket)

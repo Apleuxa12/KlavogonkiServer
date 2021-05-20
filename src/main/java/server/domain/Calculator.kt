@@ -13,7 +13,6 @@ class Calculator {
         private val logger = Logger.getLogger(Calculator::class.java.name)
 
         fun calculate(coloredText: ColoredText, input: String, shift: Int): ColoredText {
-            val inputColors = coloredText.colors
             val text = coloredText.text
             val stringText = text?.value!!
             val colors = coloredText.colors
@@ -30,18 +29,18 @@ class Calculator {
                 }
             }
 
-//            for(i in input.length until stringText.length){
-//                if(i < stringText.length) {
-//                    colors.add(
-//                        when (stringText[i]) {
-//                            ' ' -> Color.SPACE
-//                            else -> Color.NEUTRAL
-//                        }
-//                    )
-//                }
-//            }
-
             return ColoredText(text, colors, shouldClear(shift, input, stringText))
+        }
+
+        fun calculateProgress(coloredText: ColoredText): Pair<Int, Double> {
+            val wordsTotal = coloredText.text?.value!!.split(' ').size
+            val wordsNumber = coloredText.colors
+                .map { color -> color.name.first().toString() }
+                .reduce { a, b -> a + b }
+                .split(Color.SPACE.name.first())
+                .filter { x -> x.all { it == Color.RIGHT.name.first() } }
+                .count()
+            return wordsNumber to (wordsNumber.toDouble() / wordsTotal)
         }
 
         private fun shouldClear(shift: Int, input: String, stringText: String): Boolean {
@@ -53,6 +52,18 @@ class Calculator {
 
         fun calculateResults(text: Text, elapsed: Long) =
             Results(time = elapsed, speed = 1000 * text.value.length.toDouble() / elapsed)
+
+        fun createColorsInitial(text: Text): ArrayList<Color> {
+            val colors = ArrayList<Color>()
+            for (letter in text.value)
+                colors.add(
+                    when (letter) {
+                        ' ' -> Color.SPACE
+                        else -> Color.NEUTRAL
+                    }
+                )
+            return colors
+        }
     }
 
 }

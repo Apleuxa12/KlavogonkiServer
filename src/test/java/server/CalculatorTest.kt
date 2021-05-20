@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import server.domain.Calculator
 
-internal class UserThreadTest {
+internal class CalculatorTest {
 
     private val text = Text(theme = "theme", value = "one two three")
 
@@ -184,6 +184,15 @@ internal class UserThreadTest {
         assertEquals(coloredText.colors[6], Color.RIGHT)
         assertEquals(coloredText.colors[8], Color.WRONG)
         assertFalse(coloredText.shouldClear)
+    }
+
+    @Test
+    fun testCalculateProgress(){
+        var coloredText = ColoredText(text, ArrayList(), false)
+
+        coloredText = calculate(coloredText, "one ", 0)
+        val progress = Calculator.calculateProgress(coloredText)
+        assertEquals(progress.first, 1)
     }
 
     private fun calculate(coloredText: ColoredText, input: String, shift: Int): ColoredText {

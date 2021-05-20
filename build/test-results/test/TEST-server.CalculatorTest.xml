@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="server.CalculatorTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2021-05-20T10:23:28" hostname="DESKTOP-6HDLNNF" time="0.029">
+  <properties/>
+  <testcase name="testCalculateGreaterThenLength()" classname="server.CalculatorTest" time="0.016"/>
+  <testcase name="testCalculateRight2()" classname="server.CalculatorTest" time="0.0"/>
+  <testcase name="testCalculateRight3()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateRight4()" classname="server.CalculatorTest" time="0.002"/>
+  <testcase name="testCalculateManyWords2()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateLongWord()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateProgress()" classname="server.CalculatorTest" time="0.002"/>
+  <testcase name="testCalculateManyWords()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateWithClear()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateRight()" classname="server.CalculatorTest" time="0.001"/>
+  <testcase name="testCalculateWrong()" classname="server.CalculatorTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

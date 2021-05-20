@@ -37,9 +37,10 @@ class UserThread(
 //        Send Text
             text = server.text
             sendMessage(text)
+            logger.info("$text sent to ${user.userName}")
 
             var message = ""
-            var coloredText = ColoredText(text, createColorsInitial(text), false)
+            var coloredText = ColoredText(text, Calculator.createColorsInitial(text), false)
             var shift = 0
             var previous = ""
 
@@ -52,17 +53,20 @@ class UserThread(
                     message = readMessage(line)
                     if(line != previous) {
                         coloredText = Calculator.calculate(coloredText, message, shift)
-                        if (coloredText.shouldClear)
+                        if (coloredText.shouldClear) {
                             shift += message.length
+                            val progress = Calculator.calculateProgress(coloredText)
+                            logger.info("${user.userName} has typed ${progress.first} words " +
+                                    "(${String.format("%.2f", progress.second * 100)} percent)")
+                        }
                     }
                     previous = line
 
                     sendMessage(coloredText)
-//                    logger.info(message)
                 } while (!coloredText.isFinished)
             }
             val results = Calculator.calculateResults(text, elapsed)
-            logger.info(results.toString())
+            logger.info("${user.userName} - $results")
             sendMessage(results)
         } catch (e: IOException) {
             logger.severe(e.message)
@@ -70,25 +74,15 @@ class UserThread(
             logger.info(e.message)
         } finally {
             close()
+            logger.info("User ${user.userName} disconnected")
         }
+
     }
 
     private fun close() {
         reader.close()
         writer.close()
         socket.close()
-    }
-
-    private fun createColorsInitial(text: Text): ArrayList<Color>{
-        val colors = ArrayList<Color>()
-        for(letter in text.value)
-            colors.add(
-                when(letter){
-                    ' ' -> Color.SPACE
-                    else -> Color.NEUTRAL
-                }
-            )
-        return colors
     }
 
     private inline fun <reified T> readMessage(input: String): T = SerializationUtils.deserializeMessage(input)

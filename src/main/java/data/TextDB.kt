@@ -12,16 +12,23 @@ object TextDB {
 
     private var GLOBAL_ID = AtomicLong(0)
 
-    init{
+    init {
 //      ADD TEXTS
-        add(Text(theme = "MockTheme", value = "Mock mock"))
+        add(
+            theme = "Poems", value = "No man is an island, Entire of itself, Every man is a piece of a continent," +
+                    " A part of the main."
+        )
     }
 
-    private fun add(text: Text){
+    private fun add(theme: String, value: String) {
+        add(Text(theme, value))
+    }
+
+    private fun add(text: Text) {
         texts[GLOBAL_ID.incrementAndGet()] = text
     }
 
-    fun getRandomText(): Text{
+    fun getRandomText(): Text {
         return texts.entries.elementAt(Random().nextInt(texts.size)).value
     }
 
@@ -29,7 +36,7 @@ object TextDB {
         return texts[id]
     }
 
-    fun getTextsByTheme(theme: String): List<Text>{
+    fun getTextsByTheme(theme: String): List<Text> {
         return texts.values.filter { v -> v.theme == theme }
     }
 }

@@ -11,8 +11,8 @@ repositories {
     mavenCentral()
 }
 
-application{
-    mainClassName = 'main.Main'
+application {
+    mainClassName = 'main.MainKt'
 }
 
 test {
@@ -38,10 +38,10 @@ dependencies {
 
 jar {
     manifest {
-        attributes "Main-Class": "main.Main"
+        attributes "Implementation-Title": "Gradle QuickStart",
+                "Implementation-Version": 1.0,
+                "Main-Class": "main.MainKt"
     }
 
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
+    from { configurations.compileClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
 }
